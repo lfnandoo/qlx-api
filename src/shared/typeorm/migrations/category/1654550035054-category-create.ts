@@ -5,7 +5,7 @@ export class categoryCreate1654550035054 implements MigrationInterface {
     await queryRunner.query(`
     CREATE TABLE 
       category (
-        id UNIQUEIDENTIFIER PRIMARY KEY,
+        id UUID PRIMARY KEY,
         description VARCHAR(50) NOT NULL
       );
     `);
