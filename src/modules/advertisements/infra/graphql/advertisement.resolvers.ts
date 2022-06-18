@@ -1,6 +1,6 @@
 import { CreateAdvertisementResolver } from '../../useCases/createAdvertisement/create-advertisement.resolver';
-import { CreateAdvertisementQResolver } from '../../useCases/createAdvertisement/create-q-advertisement.resolver';
+import { FindAdvertisementResolver } from '../../useCases/findAdvertisement/find-advertisement.resolver';
 
-const advertisementResolvers = [CreateAdvertisementResolver, CreateAdvertisementQResolver];
+const advertisementResolvers = [CreateAdvertisementResolver, FindAdvertisementResolver];
 
 export { advertisementResolvers };

@@ -24,7 +24,7 @@ describe('Create advertisement', () => {
 
     const entity = await createAdvertisementUseCase.execute(createAdvertisementModel);
 
-    expect(entity).toBeTruthy();
+    expect(entity).toBeDefined();
   });
 
   it('should not be able to create a new advertisement with empty fields', async () => {
