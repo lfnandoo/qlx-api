@@ -3,7 +3,7 @@ import http from 'http';
 import cors from 'cors';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
-import { schema } from './graphql/schema';
+import { createSchema } from '../../graphql/schema';
 import { appDataSource } from '../../typeorm/data-source';
 
 class App {
@@ -40,7 +40,7 @@ class App {
     const httpServer = http.createServer(this.app);
 
     const apolloServer = new ApolloServer({
-      schema,
+      schema: await createSchema(),
       plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
     });
 
