@@ -54,7 +54,7 @@ describe('Find advertisement', () => {
     };
 
     await expect(findAdvertisementUseCase.execute(findAdvertisementModel)).rejects.toEqual(
-      new AppError('Fill all required fields.'),
+      new AppError('Fill all required fields'),
     );
   });
 });

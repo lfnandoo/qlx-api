@@ -10,6 +10,7 @@ import {
   CreateAdvertisementUseCase,
   ICreateAdvertisementModel,
 } from '../createAdvertisement/create-advertisement.use-case';
+import { IUpdateAdvertisementModel } from './update-advertisement.use-case';
 
 let dataSource: DataSource;
 let categoryRepository: CategoryRepositoryModel;
@@ -27,20 +28,16 @@ afterAll(async () => {
   await dataSource.destroy();
 });
 
-const findAdvertisementMutation = `
-  query FindAdvertisement($advertisementId: String!) {
-    findAdvertisement(id: $advertisementId) {
-      id,
-      title,
-      address,
-      categoryId,
-      creationDate
+const updateAdvertisementMutation = `
+  mutation UpdateAdvertisement($data: UpdateAdvertisementDTO!, $advertisementId: String!) {
+    updateAdvertisement(data: $data, id: $advertisementId) {
+      id      
     }
   }
 `;
 
-describe('Find Advertisement Resolver', () => {
-  it('should be able to find a advertisement', async () => {
+describe('Update Advertisement Resolver', () => {
+  it('should be able to update a advertisement', async () => {
     const category = await categoryRepository.findByDescription('Roupas');
     const createAdvertisementModel: ICreateAdvertisementModel = {
       title: 'Casaco',
@@ -52,26 +49,34 @@ describe('Find Advertisement Resolver', () => {
 
     expect(entity).toBeDefined();
 
+    const updateAdvertisementModel: Omit<IUpdateAdvertisementModel, 'id'> = {
+      address: 'Rio de Janeiro',
+    };
+
     const response = await gCall({
-      source: findAdvertisementMutation,
+      source: updateAdvertisementMutation,
       variableValues: {
         advertisementId: entity.id,
+        data: updateAdvertisementModel,
       },
     });
 
-    expect(response.data?.findAdvertisement).toBeDefined();
-    expect(response.data?.findAdvertisement).toHaveProperty('id');
-    expect(response.data?.findAdvertisement).toHaveProperty('title');
-    expect(response.data?.findAdvertisement).toHaveProperty('address');
-    expect(response.data?.findAdvertisement).toHaveProperty('categoryId');
-    expect(response.data?.findAdvertisement).toHaveProperty('creationDate');
+    expect(response.data?.updateAdvertisement).toBeDefined();
+
+    const updatedEntity = await advertisementRepository.findById(entity.id);
+
+    expect(updatedEntity?.address).toEqual(updateAdvertisementModel.address);
   });
 
-  it('should not be able to find a non exinsting advertisement', async () => {
+  it('should not be able to update a non exinsting advertisement', async () => {
+    const updateAdvertisementModel: Omit<IUpdateAdvertisementModel, 'id'> = {
+      address: 'Rio de Janeiro',
+    };
     const response = await gCall({
-      source: findAdvertisementMutation,
+      source: updateAdvertisementMutation,
       variableValues: {
         advertisementId: uuidv4(),
+        data: updateAdvertisementModel,
       },
     });
 

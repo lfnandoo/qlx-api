@@ -24,7 +24,9 @@ describe('Create advertisement', () => {
 
     const entity = await createAdvertisementUseCase.execute(createAdvertisementModel);
 
-    expect(entity).toBeDefined();
+    const createdEntity = await advertisementInMemoryRepository.findById(entity.id);
+
+    expect(createdEntity).toHaveProperty('id');
   });
 
   it('should not be able to create a new advertisement with empty fields', async () => {
@@ -35,7 +37,7 @@ describe('Create advertisement', () => {
     };
 
     await expect(createAdvertisementUseCase.execute(createAdvertisementModel)).rejects.toEqual(
-      new AppError('Fill all required fields.'),
+      new AppError('Fill all required fields'),
     );
   });
 });

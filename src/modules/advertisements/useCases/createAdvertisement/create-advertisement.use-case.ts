@@ -14,7 +14,7 @@ class CreateAdvertisementUseCase {
 
   async execute(data: ICreateAdvertisementModel): Promise<AdvertisementEntity> {
     if (!data.title.trim() || !data.categoryId.trim() || !data.address.trim()) {
-      throw new AppError('Fill all required fields.');
+      throw new AppError('Fill all required fields');
     }
     const entity = await this.advertisementRepository.create(data);
 

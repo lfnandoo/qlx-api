@@ -16,8 +16,10 @@ beforeAll(async () => {
   advertisementRepository = new AdvertisementRepository(dataSource);
 });
 
-afterAll(async () => {
-  dataSource.destroy();
+afterAll((done) => {
+  dataSource.destroy().then(() => {
+    done();
+  });
 });
 
 const createAdvertisementMutation = `

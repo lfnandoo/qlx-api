@@ -3,7 +3,7 @@ import { AdvertisementRepositoryModel } from '../../../repositories/advertisemen
 import { AdvertisementEntity } from '../../entities/advertisement.entity';
 
 class AdvertisementInMemoryRepository implements AdvertisementRepositoryModel {
-  private readonly advertisements: AdvertisementEntity[];
+  private advertisements: AdvertisementEntity[];
 
   constructor() {
     this.advertisements = [];
@@ -21,6 +21,16 @@ class AdvertisementInMemoryRepository implements AdvertisementRepositoryModel {
     const entity = this.advertisements.find((advertisement) => advertisement.id === id) || null;
 
     return entity;
+  }
+
+  public async update(entity: AdvertisementEntity): Promise<void> {
+    this.advertisements = this.advertisements.map((advertisement) => {
+      if (advertisement.id === entity.id) {
+        return entity;
+      }
+
+      return advertisement;
+    });
   }
 }
 

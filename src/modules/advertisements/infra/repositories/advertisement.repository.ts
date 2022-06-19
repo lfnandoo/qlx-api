@@ -1,5 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 import { CreateAdvertisementDTO } from '../../dtos/create-advertisement.dto';
+import { UpdateAdvertisementDTO } from '../../dtos/update-advertisement.dto';
 import { AdvertisementRepositoryModel } from '../../repositories/advertisement-repository.model';
 import { AdvertisementEntity } from '../entities/advertisement.entity';
 
@@ -22,6 +23,10 @@ class AdvertisementRepository implements AdvertisementRepositoryModel {
     const entity = await this.repository.findOne({ where: { id } });
 
     return entity;
+  }
+
+  public async update(entity: AdvertisementEntity): Promise<void> {
+    await this.repository.save(entity);
   }
 }
 
