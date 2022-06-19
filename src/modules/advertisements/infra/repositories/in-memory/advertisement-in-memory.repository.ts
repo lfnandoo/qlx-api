@@ -1,4 +1,7 @@
+import { PaginationResponse } from '../../../../../type-utils/interfaces/pagination-response.interface';
+import splitArrayIntoChunksOfLen from '../../../../../utils/split-arr-into-chuncks.function';
 import { CreateAdvertisementDTO } from '../../../dtos/create-advertisement.dto';
+import { SearchAdvertisementDTO } from '../../../dtos/search-advertisement.dto';
 import { AdvertisementRepositoryModel } from '../../../repositories/advertisement-repository.model';
 import { AdvertisementEntity } from '../../entities/advertisement.entity';
 
@@ -31,6 +34,25 @@ class AdvertisementInMemoryRepository implements AdvertisementRepositoryModel {
 
       return advertisement;
     });
+  }
+
+  public async search(
+    data: SearchAdvertisementDTO,
+  ): Promise<PaginationResponse<AdvertisementEntity>> {
+    const advertisements = this.advertisements.filter((advertisement) => {
+      return (
+        advertisement.title.includes(data.searchTerm) ||
+        advertisement.description?.includes(data.searchTerm)
+      );
+    });
+    const rows = splitArrayIntoChunksOfLen(advertisements, data.pageSize)[data.page];
+
+    const response = {
+      rows,
+      count: advertisements.length,
+    };
+
+    return response;
   }
 }
 

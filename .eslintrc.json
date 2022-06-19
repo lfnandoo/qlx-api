@@ -24,6 +24,8 @@
     "import/extensions": "off",
     "no-useless-constructor": "off",
     "class-methods-use-this": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "error",
     "@typescript-eslint/no-non-null-assertion": "off"
   },
   "settings": {

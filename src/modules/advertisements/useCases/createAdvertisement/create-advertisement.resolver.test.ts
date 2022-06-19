@@ -10,18 +10,6 @@ let dataSource: DataSource;
 let categoryRepository: CategoryRepositoryModel;
 let advertisementRepository: AdvertisementRepositoryModel;
 
-beforeAll(async () => {
-  dataSource = await testDataSource();
-  categoryRepository = new CategoryRepository(dataSource);
-  advertisementRepository = new AdvertisementRepository(dataSource);
-});
-
-afterAll((done) => {
-  dataSource.destroy().then(() => {
-    done();
-  });
-});
-
 const createAdvertisementMutation = `
   mutation CreateAdvertisement($data: CreateAdvertisementDTO!) {
     createAdvertisement(data: $data) {
@@ -31,6 +19,16 @@ const createAdvertisementMutation = `
 `;
 
 describe('Create Advertisement Resolver', () => {
+  beforeEach(async () => {
+    dataSource = await testDataSource();
+    categoryRepository = new CategoryRepository(dataSource);
+    advertisementRepository = new AdvertisementRepository(dataSource);
+  });
+
+  afterEach(async () => {
+    await dataSource.destroy();
+  });
+
   it('should be able to create a new advertisement', async () => {
     const category = await categoryRepository.findByDescription('Roupas');
     const data = { title: 'Camisa do Brasil', address: 'Rio de Janeiro', categoryId: category?.id };

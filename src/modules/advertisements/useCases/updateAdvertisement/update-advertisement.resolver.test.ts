@@ -17,17 +17,6 @@ let categoryRepository: CategoryRepositoryModel;
 let advertisementRepository: AdvertisementRepositoryModel;
 let createAdvertisementUseCase: CreateAdvertisementUseCase;
 
-beforeAll(async () => {
-  dataSource = await testDataSource();
-  categoryRepository = new CategoryRepository(dataSource);
-  advertisementRepository = new AdvertisementRepository(dataSource);
-  createAdvertisementUseCase = new CreateAdvertisementUseCase(advertisementRepository);
-});
-
-afterAll(async () => {
-  await dataSource.destroy();
-});
-
 const updateAdvertisementMutation = `
   mutation UpdateAdvertisement($data: UpdateAdvertisementDTO!, $advertisementId: String!) {
     updateAdvertisement(data: $data, id: $advertisementId) {
@@ -37,6 +26,17 @@ const updateAdvertisementMutation = `
 `;
 
 describe('Update Advertisement Resolver', () => {
+  beforeEach(async () => {
+    dataSource = await testDataSource();
+    categoryRepository = new CategoryRepository(dataSource);
+    advertisementRepository = new AdvertisementRepository(dataSource);
+    createAdvertisementUseCase = new CreateAdvertisementUseCase(advertisementRepository);
+  });
+
+  afterEach(async () => {
+    await dataSource.destroy();
+  });
+
   it('should be able to update a advertisement', async () => {
     const category = await categoryRepository.findByDescription('Roupas');
     const createAdvertisementModel: ICreateAdvertisementModel = {

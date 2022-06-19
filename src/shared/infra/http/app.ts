@@ -27,6 +27,7 @@ class App {
   private async connectToTheDatabase() {
     try {
       await appDataSource.initialize();
+      await appDataSource.runMigrations();
     } catch (error) {
       console.log(`Database connection error: ${error}`);
     }

@@ -1,6 +1,8 @@
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, Like, Repository } from 'typeorm';
+import { getPaginationProps } from '../../../../shared/typeorm/utils/get-pagination-props';
+import { PaginationResponse } from '../../../../type-utils/interfaces/pagination-response.interface';
 import { CreateAdvertisementDTO } from '../../dtos/create-advertisement.dto';
-import { UpdateAdvertisementDTO } from '../../dtos/update-advertisement.dto';
+import { SearchAdvertisementDTO } from '../../dtos/search-advertisement.dto';
 import { AdvertisementRepositoryModel } from '../../repositories/advertisement-repository.model';
 import { AdvertisementEntity } from '../entities/advertisement.entity';
 
@@ -27,6 +29,35 @@ class AdvertisementRepository implements AdvertisementRepositoryModel {
 
   public async update(entity: AdvertisementEntity): Promise<void> {
     await this.repository.save(entity);
+  }
+
+  public async search(
+    data: SearchAdvertisementDTO,
+  ): Promise<PaginationResponse<AdvertisementEntity>> {
+    const where = [
+      {
+        title: Like(`%${data.searchTerm}%`),
+        categoryId: data.categoryId,
+      },
+      {
+        description: Like(`%${data.searchTerm}%`),
+        categoryId: data.categoryId,
+      },
+    ];
+    console.log(where);
+    const pagination = getPaginationProps(data);
+
+    const [rows, count] = await this.repository.findAndCount({
+      where,
+      ...pagination,
+    });
+
+    const response = {
+      rows,
+      count,
+    };
+
+    return response;
   }
 }
 
